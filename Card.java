@@ -2,7 +2,7 @@ public class Card{
 	private String word;
 	private String description;
 	
-	public Card(String...args){
+	public Card(String[]args){
 		word = null;
 		description = "";
 		

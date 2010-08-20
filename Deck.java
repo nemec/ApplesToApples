@@ -25,11 +25,7 @@ public class Deck {
 		Scanner read = new Scanner(new File(file));
 		while(read.hasNext()){
 			String text = read.nextLine();
-			int ix = text.indexOf(':');
-			if(ix > 0)
-				cards.add(new Card(text.substring(0,ix), text.substring(ix+1)));
-			else
-				cards.add(new Card(text));
+			cards.add(new Card(text.split(":")));
 		}
 		
 		Collections.shuffle(cards);

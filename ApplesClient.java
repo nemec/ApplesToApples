@@ -102,7 +102,7 @@ public class ApplesClient{
 				System.exit(0);
 			}
 			else{
-				out.println(ops.unk);
+				out.println(ops.err);
 				System.out.println("unknown command");
 			}
 			
@@ -119,7 +119,7 @@ public class ApplesClient{
 		int size = hand.size();
 		System.out.println("Choices:");
 		for(int x=0;x<size;x++){
-			System.out.println(x+". "+hand.get(x).getWord());
+			System.out.println(x+". "+hand.get(x));
 		}
 		System.out.print(">");
 		Scanner sc = new Scanner(System.in);
@@ -156,6 +156,7 @@ public class ApplesClient{
 		return cards;
 	}
 	
+	// Dealer chooses a card here
 	private void chooseCard(){
 		ArrayList<Card> cards = receiveCards();
 		System.out.println("Adjective: "+adjective);
@@ -167,7 +168,11 @@ public class ApplesClient{
 			if(!in.readLine().equals(ops.cmd_chs)){
 				System.err.println("Error with card choice.");
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
+		}
+		catch (NullPointerException e){
+			out.println(ops.err);
 		}
 		System.out.print(">");
 		Scanner sc = new Scanner(System.in);

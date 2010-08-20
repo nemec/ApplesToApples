@@ -1,6 +1,6 @@
 public final class ApplesCommands {
 	public final String ping = "ping";
-	public final String unk = "unk";
+	public final String err = "err";
 	public final String ack_ping = "ack_ping";
 	public final String cmd_hand = "cmd_hand";
 	public final String cmd_adj = "cmd_adj";

@@ -94,7 +94,7 @@ public class Player {
 	}
 	
 	public Card requestCard(){
-		return new Card(sendData(ops.cmd_req));
+		return new Card(sendData(ops.cmd_req).split(":"));
 	}
 	
 	// setDealer and chooseCard are tied together

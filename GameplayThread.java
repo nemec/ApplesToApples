@@ -19,7 +19,7 @@ public class GameplayThread implements Runnable{
 	private Deck adj;
 	private ArrayList<Player> users;
 	private Player dealer;
-	private final int MAX_HAND_SIZE = 2;
+	private final int MAX_HAND_SIZE = 7;
 	private boolean gameover;
 	
 	public GameplayThread(String nfile, String afile, 
@@ -89,6 +89,7 @@ public class GameplayThread implements Runnable{
 			p.sendPreview(submitted.keySet());
 		}
 		Card winner = dealer.chooseCard(submitted.keySet());
+		System.out.println(submitted.containsKey(winner));
 		submitted.remove(winner).sendWinner(winner);
 		for(Player p : submitted.values()){
 			p.sendLoser();
