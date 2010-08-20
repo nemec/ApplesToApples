@@ -1,0 +1,5 @@
+Apples to Apples built into a networked client/server application.
+Soon to have an Android app so that multiple people can play on their phones.
+Currently, only a cli client is available (ApplesClient.java).
+
+Only one room. A room manager will eventually be built to handle joining, etc.
