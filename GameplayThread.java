@@ -99,7 +99,6 @@ public class GameplayThread extends Thread{
 			p.sendPreview(submitted.keySet());
 		}
 		Card winner = dealer.chooseCard(submitted.keySet());
-		System.out.println(submitted.containsKey(winner));
 		submitted.remove(winner).sendWinner(winner);
 		for(Player p : submitted.values()){
 			p.sendLoser();

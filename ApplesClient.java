@@ -78,7 +78,7 @@ public class ApplesClient{
 				ArrayList<Card> cards = receiveCards();
 				System.out.println("These are the submitted cards:");
 				for(Card c : cards){
-					System.out.println(c.getWord());
+					System.out.println("\t"+c.getWord());
 				}
 			}
 			// Server requesting hand size
@@ -114,16 +114,7 @@ public class ApplesClient{
 	}
 	
 	private void sendCard(){
-		System.out.println("Adjective: "+adjective);
-		// time to send a new card
-		int size = hand.size();
-		System.out.println("Choices:");
-		for(int x=0;x<size;x++){
-			System.out.println(x+". "+hand.get(x));
-		}
-		System.out.print(">");
-		Scanner sc = new Scanner(System.in);
-		int choice = sc.nextInt();
+		int choice = displayAndChooseCard(adjective, hand);
 		out.println(hand.remove(choice));
 	}
 	
@@ -159,11 +150,7 @@ public class ApplesClient{
 	// Dealer chooses a card here
 	private void chooseCard(){
 		ArrayList<Card> cards = receiveCards();
-		System.out.println("Adjective: "+adjective);
-		System.out.println("Choices:");
-		for(int x=0;x<cards.size();x++){
-			System.out.println(x+". "+cards.get(x));
-		}
+		
 		try {
 			if(!in.readLine().equals(ops.cmd_chs)){
 				System.err.println("Error with card choice.");
@@ -174,9 +161,31 @@ public class ApplesClient{
 		catch (NullPointerException e){
 			out.println(ops.err);
 		}
-		System.out.print(">");
+		int choice = displayAndChooseCard(adjective, cards);
+		out.println(cards.get(choice));
+	}
+	
+	private int displayAndChooseCard(Card adj, ArrayList<Card> cards){
+		System.out.println("Adjective: "+adjective.getWord());
+		System.out.println("\t"+adjective.getDescription());
+		
+		System.out.println("Choices:");
+		for(int x=0;x<cards.size();x++){
+			Card c = cards.get(x);
+			System.out.println(x+". "+c.getWord());
+			System.out.println("\t"+c.getDescription());
+		}
+		
 		Scanner sc = new Scanner(System.in);
-		out.println(cards.get(sc.nextInt()));
+		int i;
+		System.out.print(">");
+		i = sc.nextInt();
+		while(i < 0 || i > cards.size()){
+			System.out.println("Choice out of bounds.");
+			System.out.print(">");
+			i = sc.nextInt();
+		}
+		return i;
 	}
 
 	public void run(){
