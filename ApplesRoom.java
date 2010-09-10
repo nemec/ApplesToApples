@@ -15,7 +15,7 @@ public class ApplesRoom{
 	public ApplesRoom(String nfile, String afile, int port){
 		users = new ArrayList<Player>();
 		try{
-			gameplay = new Thread(new GameplayThread(nfile, afile, users));
+			gameplay = new GameplayThread(nfile, afile, users);
 			gameplay.start();
 			
 		}
@@ -41,10 +41,12 @@ public class ApplesRoom{
 				server = listener.accept();
 				synchronized(users){
 					users.add(new Player(server));
-					/*if(users.size() == 3){
-					 *	notify_gamethread();
-					 *}
-					 */
+					if(users.size() == 3){
+					 	synchronized(gameplay){
+					 		gameplay.notify();
+					 	}
+					 }
+					 
 				}
 			}
 			catch(IOException e){

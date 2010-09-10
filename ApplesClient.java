@@ -180,6 +180,7 @@ public class ApplesClient{
 	}
 
 	public void run(){
+		System.out.println("Waiting for a game to open up...");
 		while(true){
 			handleCommand();
 		}

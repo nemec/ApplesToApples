@@ -3,3 +3,12 @@ Soon to have an Android app so that multiple people can play on their phones.
 Currently, only a cli client is available (ApplesClient.java).
 
 Only one room. A room manager will eventually be built to handle joining, etc.
+
+
+Running
+=======
+Compile and run the ApplesRoom class. It will wait for three connections
+before starting a round. Compile and run the ApplesClient class for each
+player. Players may join at any time, but will only be allowed to play
+when the current round ends. The default number of rounds is 10, but may be
+set to any value (or -1 for infinite).

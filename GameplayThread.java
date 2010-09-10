@@ -2,32 +2,39 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class GameplayThread implements Runnable{
+public class GameplayThread extends Thread{
 	private Deck noun;
 	private Deck adj;
 	private ArrayList<Player> users;
 	private Player dealer;
 	private final int MAX_HAND_SIZE = 7;
 	private boolean gameover;
+	private int numRounds;
+	private int remainingRounds;
 	
 	public GameplayThread(String nfile, String afile, 
-			ArrayList<Player>users) throws java.io.FileNotFoundException {
+			ArrayList<Player> users) throws java.io.FileNotFoundException{
+		this(nfile, afile, users, 10);
+	}
+	
+	public GameplayThread(String nfile, String afile, 
+			ArrayList<Player> users, int rounds) throws java.io.FileNotFoundException {
 
 		this.users=users;
 		dealer = null;
 		gameover = false;
+		numRounds = rounds;
+		remainingRounds = numRounds;
 		
 		noun = new Deck(nfile);
 		adj = new Deck(afile); 
@@ -35,7 +42,13 @@ public class GameplayThread implements Runnable{
 	
 	private void playRound(){
 		if(pruneConnections() < 3){
-			//TODO wait for three players
+			synchronized(this){
+				try {
+					wait();
+				}
+				catch (InterruptedException e) {
+				}
+			}
 		}
 		
 		ArrayList<Player> players;
@@ -64,9 +77,6 @@ public class GameplayThread implements Runnable{
 		// Notify all of new adjective card
 		Card greenCard = adj.remove();
 		if(greenCard==null){
-			for(Player p : users){
-				p.sendGameOver();
-			}
 			this.gameover = true;
 			return;
 		}
@@ -149,7 +159,7 @@ public class GameplayThread implements Runnable{
 			} catch (InterruptedException e) {
 				System.err.println("Card transmit interrupted.");
 			} catch (ExecutionException e) {
-				System.err.println("Card tranmit execution error.");
+				System.err.println("Card transmit execution error.");
 			} catch (TimeoutException e) {
 				System.err.println("Card transmit timeout.");
 			}
@@ -159,17 +169,21 @@ public class GameplayThread implements Runnable{
 	}
 	
 	protected boolean isGameOver(){
-		return gameover;
+		if(remainingRounds != -1){
+			remainingRounds--;
+		}
+		return gameover||(remainingRounds==0);
 	}
 
 	public void run() {
-		try {
-			System.out.println("sleeping");
-			Thread.sleep(5000);
-			System.out.println("done sleeping");
-		} catch (InterruptedException e) {}
-		while(!isGameOver()){
-			playRound();
+		while(true){
+			do{
+				playRound();
+			}while(!isGameOver());
+			for(Player p : users){
+				p.sendGameOver();
+			}
+			remainingRounds = numRounds;
 		}
 	}
 }
